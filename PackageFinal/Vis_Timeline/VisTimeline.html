@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Timeline Vis</title>
+
+
+    <!-- CDN and external scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+
+
+    <!-- CDN css -->
+    <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet">
+
+    <!-- Personnal css -->
+    <link href="../CSS/nouislider.css" rel="stylesheet">
+    <link href="../CSS/slider.css" rel="stylesheet">
+    <link href="../CSS/stylesheet.css" rel="stylesheet">
+
+
+
+</head>
+
+<body>
+
+
+    <div class="timeline-widget">
+
+        <h3 style="color: black ; justify-content: center;font-family: Arial, Helvetica, sans-serif; display: flex">
+            Démonstration de l'implémentation de la librairie <a href="https://visjs.github.io/vis-timeline/docs/timeline/" target="_blank"> vis-timeline-graph2d.js</a> </h3>
+
+        <button onclick="reset_dates()">    reset dates    </button>
+
+        <div id="visualization"></div>
+        <div id='slider'> </div>
+        <br><br><br><br><br>
+        <div id="slider2"></div>
+
+    </div>
+    <br><br>
+    <div id="positioncard">
+
+        <div id="card">
+            <p id="item_id"></p>
+            <p id="item_content"></p>
+            <p id="item_date"></p>
+        </div>
+    </div>
+
+
+</body>
+<footer>
+    <!-- Personnal scripts -->
+    <script src="js/nouislider.js"></script>
+    <script src="js/timeline_functions.js"></script>
+    <!-- <script src="js/slider_functions.js"></script> -->
+</footer>
+
+</html>
