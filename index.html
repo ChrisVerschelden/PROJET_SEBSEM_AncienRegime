@@ -8,9 +8,7 @@
 
     <!-- CDN and external scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sigma.js/2.4.0/sigma.min.js"></script>
+    <!-- Graphology -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/graphology/0.25.4/graphology.umd.min.js"></script>
     <!-- Sigma core -->
     <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/sigma.core.js"></script>
@@ -49,25 +47,19 @@
     <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/misc/sigma.misc.bindDOMEvents.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/misc/sigma.misc.drawHovers.js"></script>
     <!-- Sigma plugins -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.1/plugins/sigma.layout.forceAtlas2.min.js" integrity="sha512-RuRd3WCUb6GCaiaEJ2UDkaVblIVAHJNLaDG6Df2OWpzg4kQurQqh/GC/a3eFSopnRiNrwePMFvI13pbYZ1WnAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- <script src="js/plugins/sigma.layout.forceAtlas2.min.js"></script> -->
- 
- 
-    <!-- CDN css -->
-    <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet">
-
-    <!-- Personnal css -->
-    <!-- <link href="../CSS/nouislider.css" rel="stylesheet">
-    <link href="../CSS/slider.css" rel="stylesheet">
-    <link href="../CSS/stylesheet.css" rel="stylesheet"> -->
-
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/plugins/sigma.layout.forceAtlas2/supervisor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/plugins/sigma.layout.forceAtlas2/worker.js"></script>
 
     <!-- main script -->
-    <script defer src="main.js"></script>
+    <!-- <script defer src="main.js"></script> -->
+    <script src="utils.js"></script>
+    <script src="sparql.js"></script>
+    <script defer src="main_1.js"></script>
 </head>
 <body>
 
     <div id="result"></div>
+    <div id='sigma-container'style="width: 100%; height: 600px; background: white"></div>
     <div id="container" style="width: 100%; height: 600px; background: white"></div>
     <div id="network" style="width: 100%; height: 600px; background: white"></div>
 </body>
