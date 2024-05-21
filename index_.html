@@ -1,205 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet web sem</title>
+
+    <!-- CDN and external scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Graphology -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/graphology/0.25.4/graphology.umd.min.js"></script>
+    <!-- Sigma core -->
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/sigma.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/conrad.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/utils/sigma.utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/utils/sigma.polyfills.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/sigma.settings.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/classes/sigma.classes.dispatcher.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/classes/sigma.classes.configurable.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/classes/sigma.classes.graph.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/classes/sigma.classes.camera.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/classes/sigma.classes.quad.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/classes/sigma.classes.edgequad.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/captors/sigma.captors.mouse.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/captors/sigma.captors.touch.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/sigma.renderers.canvas.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/sigma.renderers.webgl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/sigma.renderers.svg.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/sigma.renderers.def.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.labels.def.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.hovers.def.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.nodes.def.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.edges.def.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.edges.curve.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.edges.arrow.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.edges.curvedArrow.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.edgehovers.def.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.edgehovers.curve.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.edgehovers.arrow.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.edgehovers.curvedArrow.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/renderers/canvas/sigma.canvas.extremities.def.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/middlewares/sigma.middlewares.rescale.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/middlewares/sigma.middlewares.copy.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/misc/sigma.misc.animation.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/misc/sigma.misc.bindEvents.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/misc/sigma.misc.bindDOMEvents.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/src/misc/sigma.misc.drawHovers.js"></script>
+    <!-- Sigma plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/plugins/sigma.layout.forceAtlas2/supervisor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sigma@1.2.1/plugins/sigma.layout.forceAtlas2/worker.js"></script>
+
+    <!-- main script -->
+    <!-- <script defer src="main.js"></script> -->
+    <script src="const.js"></script>
+    <script src="utils.js"></script>
+    <script src="sparql.js"></script>
+    <script defer src="main_1.js"></script>
 </head>
-
 <body>
-    <h1> Les liens ci-dessous ouvrent notre frise avec chacun les donnèes d'une UT différentes </h1>
-    <ul>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=1"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=2"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=3"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=4"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=5"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=6"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=7"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=8"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=9"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=10"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=11"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=12"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=13"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=14"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=15"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=16"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=17"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=18"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=19"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=20"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=21"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=22"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=23"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=24"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=25"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=26"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=27"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=28"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=29"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=30"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=31"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=32"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=33"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=34"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=35"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=36"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=37"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=38"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=39"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=40"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=41"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=42"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=43"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=44"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=45"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=46"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=47"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=48"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=49"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=50"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=51"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=52"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=53"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=54"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=55"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=56"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=57"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=58"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=59"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=60"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=61"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=62"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=63"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=64"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=65"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=66"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=67"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=68"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=69"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=70"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=71"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=72"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=73"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=74"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=75"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=76"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=77"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=78"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=79"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=80"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=81"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=82"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=83"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=84"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=85"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=86"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=87"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=88"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=89"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=90"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=91"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=92"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=93"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=94"> frise  </a> </li>
-        <li>
-            <a href="PackageFinal/Vis_Timeline/VisTimeline.html?id_frise=95"> frise  </a> </li>
-    </ul>
-</body>
 
+    <div id="result"></div>
+    <div id='sigma-container'style="width: 100%; height: 100vh; background: white"></div>
+    <div id="container" style="width: 100%; height: 100vh; background: white"></div>
+    <div id="network" style="width: 100%; height: 600px; background: white"></div>
+</body>
 </html>
