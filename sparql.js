@@ -22,68 +22,6 @@ PREFIX endDBpedia: <http://dbpedia.org/sparql>
 PREFIX endDBpediaFR: <http://fr.dbpedia.org/sparql>
 `;
 
-function query_wikidata(target_term, target_lang) {
-    // ressemble à 
-    // {
-    //     "object": {"type":"uri","value":"http://www.wikidata.org/entity/Q56639845"},
-    //     "instanceOf":{"type":"uri","value":"http://www.wikidata.org/entity/statement/Q56639845-BB8EFCBA-3223-488A-AC46-9DED12BF2E06"},
-    //     "label":{"xml:lang":"en","type":"literal","value":"Ancien Régime"},
-    //     "w":{"type":"uri","value":"http://www.wikidata.org/prop/statement/P31"},
-    //     "instanceClass":{"type":"uri","value":"http://www.wikidata.org/entity/Q13442814"},
-    //     "instanceClassLabel":{"xml:lang":"en","type":"literal","value":"scholarly article"},
-    //     "instanceClassDescription":{"xml:lang":"en","type":"literal","value":"article in an academic publication, usually peer reviewed"}
-    // }
-    return `
-        ${my_prefixes}
-        SELECT ?object ?label ?instanceOf ?w ?instanceClass ?instanceClassLabel ?instanceClassDescription
-        WHERE
-        {
-        ?object 
-            rdfs:label "${target_term}"@${target_lang};
-            rdfs:label ?label;
-            p:P31 ?instanceOf.
-
-            ?instanceOf ?w ?instanceClass.
-            ?instanceClass 
-            rdfs:label ?instanceClassLabel;
-            schema:description ?instanceClassDescription.
-            
-            
-            FILTER (lang(?label) = '${target_lang}')
-            FILTER (lang(?instanceClassLabel) = '${target_lang}')
-            FILTER (lang(?instanceClassDescription) = '${target_lang}')
-        }
-    `
-}
-
-function dbpedia_from_wikidata_query(target_term, target_lang) {
-    // ressemble à 
-    return `
-    SELECT ?ressource
-    WHERE {
-        ?ressource rdfs:label "Ancien Régime"@en.
-    }
-    `
-}
-
-function dbpedia_explore_ressource_query(target_ressource, target_lang) {
-    // ressemble à 
-    return `
-        SELECT ?wikiPageWikiLink ?wikiPageWikiLinkLabel
-        WHERE {
-            <http://fr.dbpedia.org/resource/Société_d'Ancien_Régime> <http://dbpedia.org/ontology/wikiPageWikiLink> ?wikiPageWikiLink.
-
-            ?wikiPageWikiLink rdfs:label ?wikiPageWikiLinkLabel
-
-            FILTER (lang(?wikiPageWikiLinkLabel) = 'fr')
-        }
-    `
-}
-
-
-
-
-
 /////////////////// events ///////////////////////////////////
 
 ////////// info wikidata ///////////////////

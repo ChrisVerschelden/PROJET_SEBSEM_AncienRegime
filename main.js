@@ -56,9 +56,7 @@ function redraw_graph() {
 
 async function main() {
     // Initialise sigma:
-    graph = {nodes: [],edges: []};
-    s = new Sigma(
-        graph,
+    s = new sigma(
         {
             renderer: {
                 container: document.getElementById('sigma-container'),
@@ -68,8 +66,10 @@ async function main() {
                 minArrowSize: 1
             }
         }
-    );
-    
+        );
+        
+        
+    graph = {nodes: [],edges: []};
     console.log("Collecte des info du graph")
     graph = await build_graph_event(graph, "Ancien Régime", "en");
 
