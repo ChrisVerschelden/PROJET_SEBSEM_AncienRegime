@@ -1,0 +1,11 @@
+export const TARGET_LANG = 'en'
+export const EDGE_COLOR = '#e4d0d0';
+export const EDGE_COLOR_VARIANT = '#adff2f';
+export const EDGE_SIZE_DEFAULT = 1;
+export const EDGE_SIZE_VARIANT = 5;
+export const BASE_NODE_SIZE = 1;
+export const EROOT_NODE_COLOR = '#38761D'; //vert
+export const EVENT_NODE_COLOR = '#EE651D'; //orange
+export const WIKIL_NODE_COLOR = '#BE29EC'; //violet
+//export const EDGE_TYPE = "curve";
+export const EDGE_TYPE = "line";
