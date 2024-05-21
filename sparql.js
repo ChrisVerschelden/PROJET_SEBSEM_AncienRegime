@@ -80,74 +80,46 @@ function dbpedia_explore_ressource_query(target_ressource, target_lang) {
     `
 }
 
-async function explore_ressource(graph, target_ressource, target_lang) {
-    url = 'https://dbpedia.org/sparql/?query=' + encodeURIComponent(dbpedia_explore_ressource_query(target_ressource.value, target_lang)) + '&output=json';
-    await $.ajax({
-        url: url,
-        dataType: "json",
-        success: function (data) {
-            //graph processing
-            console.log('hey')
-            console.log("explore ressource")
-            console.log(data)
-
-            for (const el of data["results"]["bindings"]) {
-                let child_node_id = el["wikiPageWikiLink"]["value"]
-                graph.nodes.push({id: child_node_id, label: child_node_id ,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE,color: '#EE651D'});
-                graph.edges.push({id: uuidv4(), source: node_id, target: child_node_id,color: '#202020',type: 'curved'});
-            }
-            graph = resize_graph(graph);
-
-        }
-    });
-    //graph.nodes.concat(discovered_nodes)
-    return graph;
-}
-
-async function explore(graph, nodes_to_explore, level) {
-    if (level === 0) return nodes;
-    let discovered_nodes = [];
-
-    for (const node of nodes_to_explore) {
-        
-    }
 
 
 
 
+/////////////////// events ///////////////////////////////////
 
+////////// info wikidata ///////////////////
+// wdt:P31 -> nature de l'element
+// wd:Q28108 -> systeme politique
+// wdt:P17 -> pays
+// wd:Q13418847 -> evenement historique
+// wd:Q142 -> france
+// wd:Q234081 -> ancien régime 
+// wdt:P585 -> date
+// 1589 - 1791 -> début et fin ancien régime
+///////////////////////////////////////////
 
-    // url = 'https://dbpedia.org/sparql/?query=' + encodeURIComponent(dbpedia_explore_query(target_term, target_lang)) + '&output=json';
-    // await $.ajax({
-    //     url: url,
-    //     dataType: "json",
-    //     success: function (data) {
-    //         //graph processing
-    //         for (const el of data["results"]["bindings"]) {
-    //             let child_node_id = el["wikiPageWikiLink"]["value"]
-    //             discovered_nodes.push({id: child_node_id, label: child_node_id ,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE,color: '#EE651D'});
-    //             graph.edges.push({id: uuidv4(), source: node_id, target: child_node_id,color: '#202020',type: 'curved'});
-    //         }
-    //         graph = resize_graph(graph);
-
-    //     }
-    // });
-    // graph.nodes.concat(discovered_nodes)
-}
-
-
-//const EDGE_COLOR = '#FFFFFF'
-const EDGE_COLOR = '#202020'
-const NODE_COLOR = '#EE651D'
-
-
-
-function requete_dbpedia_root(target_term, target_lang) {
+function requete_dbpedia_root_events(target_lang) {
     return `
+        ${my_prefixes}
+        SELECT ?event ?labelEvent ?date
+        WHERE {
+            ?event 
+                rdfs:label ?labelEvent;
+                wdt:P31/wdt:P279* wd:Q13418847;
+                wdt:P585 ?date;
+                wdt:P17 wd:Q142.
+            
+            FILTER (lang(?labelEvent) = '${target_lang}')
+        }
+    `;
+}
+
+function requete_dbpedia_ressource_by_entity(target_entity, target_lang) {
+    return `
+        ${my_prefixes}
         SELECT ?ressource ?wikiPageWikiLink ?wikiPageWikiLinkLabel
         WHERE {
             ?ressource 
-                rdfs:label "${target_term}"@${target_lang};
+                owl:sameAs <http://www.wikidata.org/entity/${target_entity}>;
                 <http://dbpedia.org/ontology/wikiPageWikiLink> ?wikiPageWikiLink.
 
             ?wikiPageWikiLink rdfs:label ?wikiPageWikiLinkLabel
@@ -171,182 +143,96 @@ function requete_dbpedia_ressource(target_ressource, target_lang) {
     `;
 }
 
-async function step_1(graph, nodes_ids, target_term, target_lang) {
+
+async function collection_of_event_step_1(graph, target_term, target_lang) {
     //graph root
     let id_root = `root - ${target_term}`;
-    graph.nodes.push({ id:  id_root,label: id_root,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE,color: NODE_COLOR});
+    graph.nodes.push({ id:  id_root,label: id_root,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE*50,color: EROOT_NODE_COLOR});
 
-    let discovered_nodes = []
+    let event_ids = [];
 
-    url = 'https://dbpedia.org/sparql/?query=' + encodeURIComponent(requete_dbpedia_root(target_term, target_lang)) + '&output=json';
+    url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=' + encodeURIComponent(requete_dbpedia_root_events(target_lang)) + '&output=json';
     await $.ajax({
         url: url,
         dataType: "json",
         success: function (data) {
             //graph processing
             console.log(data)
-            for (const el of data["results"]["bindings"]) {
-                let child_node_id = el["wikiPageWikiLink"]["value"]
-                let tmp_node = {id: child_node_id, label: child_node_id ,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE,color: NODE_COLOR}
-                discovered_nodes.push(tmp_node);
-                nodes_ids.push(child_node_id)
-                graph.nodes.push(tmp_node);
-                graph.edges.push({id: uuidv4(), source: id_root, target: child_node_id,color: EDGE_COLOR,type: 'curved'});
-                
-            }
-        }
-    });
-    return [graph, discovered_nodes];
-}
-
-async function step_2(graph, nodes_ids, discovered_nodes, target_lang) {
-    let cpt = 0;
-    console.log(discovered_nodes.length)
-    for (const node of discovered_nodes) {
-        url = 'https://dbpedia.org/sparql/?query=' + encodeURIComponent(requete_dbpedia_ressource(node.id, target_lang)) + '&output=json';
-        await $.ajax({
-            url: url,
-            dataType: "json",
-            success: function (data) {
-                //graph processing
-                for (const el of data["results"]["bindings"]) {
-                    let child_node_id = el["wikiPageWikiLink"]["value"]
-                    let tmp_node = {id: child_node_id, label: child_node_id ,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE,color: '#EE651D'}
-                    
-                    //si le noeud n'existe pas on l'ajoute
-                    if(!nodes_ids.includes(child_node_id)){
-                        graph.nodes.push(tmp_node);
-                        discovered_nodes.push(tmp_node);
-                        nodes_ids.push(child_node_id);
-                        graph.edges.push({id: uuidv4(), source: node.id, target: child_node_id,color: EDGE_COLOR,type: 'curved'});
-                    } else {
-                        graph.edges.push({id: uuidv4(), source: child_node_id, target: node.id,color: EDGE_COLOR,type: 'curved'});
-                    }
-                }
-            }
-            
-        });
-
-        cpt++;
-        if (cpt === 377) {return}
-    }
-    console.log(graph.nodes.length)
-    console.log(graph.edges.length)
-    return [graph, discovered_nodes];
-}
-
-
-
-
-
-
-/////////////////// events ///////////////////////////////////
-
-////////// info wikidata ///////////////////
-// wdt:P31 -> nature de l'element
-// wd:Q28108 -> systeme politique
-// wdt:P17 -> pays
-// wd:Q13418847 -> evenement historique
-// wd:Q142 -> france
-// wd:Q234081 -> ancien régime 
-// wdt:P585 -> date
-// 1589 - 1791 -> début et fin ancien régime
-///////////////////////////////////////////
-
-function requete_dbpedia_root(target_lang) {
-    return `
-        ${my_prefixes}
-        SELECT ?event ?labelEvent ?date
-        WHERE {
-            ?event 
-                rdfs:label ?labelEvent;
-                wdt:P31/wdt:P279* wd:Q13418847;
-                wdt:P585 ?date;
-                wdt:P17 wd:Q142.
-            
-            FILTER (lang(?labelEvent) = '${target_lang}')
-        }
-    `;
-}
-
-function requete_dbpedia_ressource(target_ressource, target_lang) {
-    return `
-        ${my_prefixes}
-        SELECT ?wikiPageWikiLink ?wikiPageWikiLinkLabel
-        WHERE {
-            <${target_ressource}> <http://dbpedia.org/ontology/wikiPageWikiLink> ?wikiPageWikiLink.
-
-            ?wikiPageWikiLink rdfs:label ?wikiPageWikiLinkLabel
-
-            FILTER (lang(?wikiPageWikiLinkLabel) = '${target_lang}')
-        }
-    `;
-}
-
-async function step_1(graph, nodes_ids, target_term, target_lang) {
-    //graph root
-    let id_root = `root - ${target_term}`;
-    graph.nodes.push({ id:  id_root,label: id_root,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE,color: NODE_COLOR});
-
-    let discovered_nodes = []
-
-    url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=' + encodeURIComponent(requete_dbpedia_root(target_lang)) + '&output=json';
-    await $.ajax({
-        url: url,
-        dataType: "json",
-        success: function (data) {
-            //graph processing
-            console.log(data)
-            for (const el of data["results"]["bindings"]) {
+            for (const el of data.results.bindings) {
                 if(!(el.date.value.split("-")[0] >= 1589 && el.date.value.split("-")[0] <= 1789)) {continue}
-                let child_node_id = el["event"]["value"]
-                let tmp_node = {id: child_node_id, label: el.labelEvent.value ,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE,color: NODE_COLOR}
+                let child_node_id = el.event.value;
+                let tmp_node = {id: child_node_id, label: el.labelEvent.value ,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE,color: EVENT_NODE_COLOR, hover_color: EDGE_COLOR_VARIANT};
 
                 //si le noeud n'existe pas on l'ajoute
-                if(!nodes_ids.includes(child_node_id)){
+                if(!event_ids.includes(child_node_id)){
                     graph.nodes.push(tmp_node);
-                    discovered_nodes.push(tmp_node);
-                    nodes_ids.push(child_node_id);
-                    graph.edges.push({id: uuidv4(), source: id_root, target: child_node_id,color: EDGE_COLOR,type: 'curved'});
+                    event_ids.push(child_node_id);
+                    graph.edges.push({id: uuidv4(), source: id_root, target: child_node_id, size: 1, color: EDGE_COLOR,type: 't'});
                 }
             }
         }
     });
-    return [graph, discovered_nodes];
+    return [graph, event_ids];
 }
 
-async function step_2(graph, nodes_ids, discovered_nodes, target_lang) {
-    let cpt = 0;
-    console.log(discovered_nodes.length)
-    for (const node of discovered_nodes) {
-        url = 'https://dbpedia.org/sparql/?query=' + encodeURIComponent(requete_dbpedia_ressource(node.id, target_lang)) + '&output=json';
+async function collection_of_dbpedia_ressources(graph, event_ids, target_lang) {
+    let wikilink_ids = [];
+
+    for (const event_id of event_ids) {
+        let isolated_id = event_id.split('/').slice(-1);
+        let url = 'https://dbpedia.org/sparql/?query=' + encodeURIComponent(requete_dbpedia_ressource_by_entity(isolated_id, target_lang)) + '&output=json';
         await $.ajax({
             url: url,
             dataType: "json",
             success: function (data) {
                 //graph processing
-                for (const el of data["results"]["bindings"]) {
-                    let child_node_id = el["wikiPageWikiLink"]["value"]
-                    let tmp_node = {id: child_node_id, label: child_node_id ,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE,color: '#EE651D'}
+                for (const el of data.results.bindings) {
+                    let child_node_id = el.wikiPageWikiLink.value
+                    let tmp_node = {id: child_node_id, label: child_node_id ,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE,color: WIKIL_NODE_COLOR, hover_color: EDGE_COLOR_VARIANT}
                     
                     //si le noeud n'existe pas on l'ajoute
-                    if(!nodes_ids.includes(child_node_id)){
+                    if(!wikilink_ids.includes(child_node_id)){
                         graph.nodes.push(tmp_node);
-                        discovered_nodes.push(tmp_node);
-                        nodes_ids.push(child_node_id);
-                        graph.edges.push({id: uuidv4(), source: node.id, target: child_node_id,color: EDGE_COLOR,type: 'curved'});
+                        wikilink_ids.push(child_node_id);
+                        graph.edges.push({id: uuidv4(), source: event_id, target: child_node_id, size: 1, color: EDGE_COLOR,type: 't'});
                     } else {
-                        graph.edges.push({id: uuidv4(), source: child_node_id, target: node.id,color: EDGE_COLOR,type: 'curved'});
+                        graph.edges.push({id: uuidv4(), source: event_id, target: child_node_id, size: 1, color: EDGE_COLOR,type: 't'});
                     }
                 }
             }
             
         });
-
-        cpt++;
-        if (cpt === 377) {return}
     }
-    console.log(graph.nodes.length)
-    console.log(graph.edges.length)
-    return [graph, discovered_nodes];
+
+    //etendre le graph
+    if (false) {
+        let cpt = 0;
+        for (const wikilink_id of wikilink_ids) {
+            let url = 'https://dbpedia.org/sparql/?query=' + encodeURIComponent(requete_dbpedia_ressource(wikilink_id, target_lang)) + '&output=json';
+            await $.ajax({
+                url: url,
+                dataType: "json",
+                success: function (data) {
+                    //graph processing
+                    for (const el of data.results.bindings) {
+                        let child_node_id = el.wikiPageWikiLink.value
+                        let tmp_node = {id: child_node_id, label: child_node_id ,x: Math.random(),y: Math.random(),size: BASE_NODE_SIZE,color: WIKIL_NODE_COLOR, hover_color: EDGE_COLOR_VARIANT}
+                        
+                        //si le noeud n'existe pas on l'ajoute
+                        if(!wikilink_ids.includes(child_node_id)){
+                            graph.nodes.push(tmp_node);
+                            wikilink_ids.push(child_node_id);
+                            graph.edges.push({id: uuidv4(), source: wikilink_id, target: child_node_id, size: 1, color: EDGE_COLOR,type: 't'});
+                        } else {
+                            graph.edges.push({id: uuidv4(), source: child_node_id, target: wikilink_id, size: 1, color: EDGE_COLOR,type: 't'});
+                        }
+                    }
+                }
+                
+            });
+            if(cpt > 350) {return} else {cpt++}
+        }
+    }
+
+    return [graph, wikilink_ids];
 }
