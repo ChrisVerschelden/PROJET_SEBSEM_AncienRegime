@@ -92,13 +92,14 @@ async function collection_of_event_step_1(graph, target_term, target_lang) {
 
     let event_ids: string[] = [];
 
+    
+
     let url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=' + encodeURIComponent(requete_dbpedia_root_events(target_lang)) + '&output=json';
     await $.ajax({
         url: url,
         dataType: "json",
         success: function (data) {
             //graph processing
-            console.log(data)
             for (const el of data.results.bindings) {
                 if(!(el.date.value.split("-")[0] >= 1589 && el.date.value.split("-")[0] <= 1789)) {continue}
                 let child_node_id = el.event.value;
@@ -118,7 +119,10 @@ async function collection_of_event_step_1(graph, target_term, target_lang) {
 async function collection_of_dbpedia_ressources(graph, event_ids, target_lang) {
     let wikilink_ids = [];
 
+    let cpt = event_ids.length;
+    console.log(event_ids.length);
     for (const event_id of event_ids) {
+        cpt--;
         let isolated_id = event_id.split('/').slice(-1);
         let url = 'https://dbpedia.org/sparql/?query=' + encodeURIComponent(requete_dbpedia_ressource_by_entity(isolated_id, target_lang)) + '&output=json';
         await $.ajax({
@@ -139,14 +143,23 @@ async function collection_of_dbpedia_ressources(graph, event_ids, target_lang) {
                     }
                 }
             }
-            
         });
+        if(cpt == 0) break
     }
+
+    //supprime les nodes ayant un degrée <= à [param 2]
+    console.log("Pruning du graph pour les noeuds de degré <= 1")
+    let old_wikilink_ids = prune_graph(graph, 1);
+    wikilink_ids = [];
+    old_wikilink_ids.forEach( (value) => {if(value.includes("dbpedia")) wikilink_ids.push(value)} )
+
 
     //etendre le graph
     if (true) {
-        let cpt = 0;
+        cpt = wikilink_ids.length;
+        console.log(wikilink_ids.length);
         for (const wikilink_id of wikilink_ids) {
+            cpt--;
             let url = 'https://dbpedia.org/sparql/?query=' + encodeURIComponent(requete_dbpedia_ressource(wikilink_id, target_lang)) + '&output=json';
             await $.ajax({
                 url: url,
@@ -167,60 +180,52 @@ async function collection_of_dbpedia_ressources(graph, event_ids, target_lang) {
                 }
                 
             });
-            if(cpt > 350) {return} else {cpt++}
+            if(cpt == 0) break
         }
     }
 }
 
-
-
-async function build_graph_event(graph, target_term, target_lang) {
-    let res = await collection_of_event_step_1(graph, target_term, target_lang);
-    await collection_of_dbpedia_ressources(res[0], res[1], target_lang);
-}
-
 function resize_graph(graph) {
-
     graph.forEachNode(node => {
         graph.updateNode(node, attr => {
             return {
               ...attr,
-              //size: Math.sqrt(graph.degree(node))
-              size: Math.sqrt(graph.degree(node)) 
+              size: Math.cbrt(graph.degree(node)) 
             };
           });
     })
 }
 
-function prune_graph(graph, harshness) {
-
+function prune_graph(graph, degree) {
+    let kept_ids = []
     graph.forEachNode(node => {
-        if (graph.degree(node) <= harshness) {
+        if (graph.degree(node) <= degree) {
             graph.edges(node).forEach((edge) => {graph.dropEdge(edge)});
             graph.dropNode(node);
+        } else {
+            kept_ids.push(node)
         }
     })
-    return graph;
+    return kept_ids
 }
-
-function redraw_graph() {
-    console.log("dessin du graph")
-    s.draw();
-}
-
-
-
-
-
 
 
 export async function build_graph(graph: any) {
-    console.log("Collecte des info du graph")
-    await build_graph_event(graph, "Ancien Régime", "en");
+    //construit les noeud wikidata à l'aide de réquète sparql, cible les résultat dans la langue TARGET_LANG
+    console.log("Collectes des noeud wikidata")
+    let res = await collection_of_event_step_1(graph, "Ancien Régime", TARGET_LANG);
+    
+    //construit les noeud dbpedia à l'aide des noeuds wikidata précédents à l'aide de réquète sparql, cible les résultat dans la langue TARGET_LANG
+    console.log("Collecte des noeuds dbpedia")
+    await collection_of_dbpedia_ressources(res[0], res[1], TARGET_LANG);
 
+    //resize les nodes
+    console.log("Resizing des noeud du graph")
     resize_graph(graph);
+
+    //supprime les nodes ayant un degrée <= à [param 2]
+    console.log("Pruning du graph pour les noeuds de degré <= 1")
     prune_graph(graph, 1);
-    //resize the nodes of the graph
-    console.log("correction des tailles des noeuds")
-    //resize_graph(graph);
+
+    
 }

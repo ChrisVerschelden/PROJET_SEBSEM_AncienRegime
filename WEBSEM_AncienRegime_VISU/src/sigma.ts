@@ -3,6 +3,7 @@
  * examples, or reproducible test cases for new issues, for instance.
  */
  import Graph from "graphology";
+ import random from 'graphology-layout/random';
  import { circular } from "graphology-layout";
  import forceAtlas2 from "graphology-layout-forceatlas2";
  import FA2Layout from "graphology-layout-forceatlas2/worker";
@@ -16,20 +17,92 @@
  import circular from 'graphology-layout/circular';
  import {EDGE_COLOR, EDGE_COLOR_VARIANT, EDGE_SIZE_DEFAULT, EDGE_SIZE_VARIANT} from "./const";
 
- 
-// Initialize the graph object with data
+ import data from '../graph.json'
+
+ function downloadObjectAsJson(exportObj, exportName){
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+//param
+var param_slider_gravity = 3
+var param_slider_expansion = 1
+var param_checkbox_barnesHutOptimize = false
+var param_slider_barnesHutTheta = 1
+var param_checkbox_adjustSizes = false
+
+var slider_gravity = document.querySelector("#gravity");
+slider_gravity.addEventListener('change', () => {
+    param_slider_gravity = slider_gravity.value;
+});
+var slider_expansion = document.querySelector("#expansion");
+slider_expansion.addEventListener('change', () => {
+   param_slider_expansion = slider_expansion.value 
+});
+var checkbox_barnesHutOptimize = document.querySelector("#barnesHutOptimize");
+checkbox_barnesHutOptimize.addEventListener('change', (e) => {
+    param_checkbox_barnesHutOptimize = checkbox_barnesHutOptimize.checked
+});
+var slider_barnesHutTheta = document.querySelector("#barnesHutTheta");
+slider_barnesHutTheta.addEventListener('change', () => {
+    param_slider_barnesHutTheta = slider_barnesHutTheta.value
+});
+var checkbox_adjustSizes = document.querySelector("#adjustSizes");
+checkbox_adjustSizes.addEventListener('change', () => {
+    param_checkbox_adjustSizes = checkbox_adjustSizes.checked    
+});
+var update_graph = document.querySelector("#update_graph");
+update_graph.addEventListener('click', () => {
+    draw_graph();
+});
+
+function draw_graph() {
+    console.log("Dessins du graph basé sur les paramètres")
+    let option = {}
+    option["gravity"] = Math.max(0.1,param_slider_gravity);
+    option["expansion"] =  0.1 + param_slider_expansion;
+    option["barnesHutOptimize"] = param_checkbox_barnesHutOptimize;
+    option["barnesHutTheta"] = 0.1 + param_slider_barnesHutTheta/10;
+    option["adjustSizes"] = param_checkbox_adjustSizes;
+
+    var positions = random(graph);
+    var layout = new FA2Layout(graph, {
+        settings: {
+            ...option,
+            "outboundAttractionDistribution":true
+        }
+    });
+
+
+    //To start the layout
+    layout.start();
+    setTimeout(() => {
+        // To stop the layout
+        layout.stop();
+    }, 6000);    
+}
+
 const graph = new Graph();
-//graph.import(data);
 
-await build_graph(graph);
-
-console.log("mais bordel")
+//set true if you want to boot from web data, false if you want to boot from graph.json
+if(false) {
+    // Initialize the graph object with data
+    await build_graph(graph);
+    //downloadObjectAsJson(graph.export(), "graph")
+} else {
+    // Initialize the graph object with data
+    graph.import(data);
+}
 
 // Retrieve some useful DOM elements:
 const container = document.getElementById("sigma-container") as HTMLElement;
 
 /** instantiate sigma into the container **/
-
 const renderer = new Sigma(graph, container, {
     allowInvalidContainer: true,
     defaultEdgeType: "curve",
@@ -38,60 +111,25 @@ const renderer = new Sigma(graph, container, {
     },
   });
 
-
-//const layout = new NoverlapLayout(graph, {maxIterations : 50});
-
-const layout = new FA2Layout(graph, {
-    settings: {
-        gravity: 0.0001,
-        "adjustSizes":false
-    }
-});
-
-
-// // To start the layout
-layout.start();
-setTimeout(() => {
-    // To stop the layout
-    layout.stop();
-}, 15000);
-
-
-// // To kill the layout and release attached memory
-// layout.kill();
-
-// // Assess whether the layout is currently running
-// layout.isRunning();
-
-
-//const positions = circular(graph, {scale: 300});
-
-// To directly assign the positions to the nodes:
-//circular.assign(graph);
-
-
-
-
 renderer.on('enterNode', (e) => {
     graph.forEachEdge(edge => { 
         if(graph.target(edge) === e.node || graph.source(edge) === e.node) {
-            console.log("on est la")
             graph.setEdgeAttribute(edge, 'size', EDGE_SIZE_VARIANT);
             graph.setEdgeAttribute(edge, 'color', EDGE_COLOR_VARIANT);
         }
     })
 })
-
 renderer.on('leaveNode', (e) => {
     graph.forEachEdge(edge => { 
         if(graph.target(edge) === e.node || graph.source(edge) === e.node) {
-            console.log("on est la")
             graph.setEdgeAttribute(edge, 'size', EDGE_SIZE_DEFAULT);
             graph.setEdgeAttribute(edge, 'color', EDGE_COLOR);
         }
     })
 })
-
 renderer.on('clickNode', (e) => {
     window.open(e.node, '_blank').focus();
 })
+
+
+draw_graph()
