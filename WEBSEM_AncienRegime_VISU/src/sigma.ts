@@ -61,6 +61,9 @@ update_graph.addEventListener('click', () => {
     draw_graph();
 });
 
+//indicators
+var graph_info = document.querySelector("#graph_info");
+
 function draw_graph() {
     console.log("Dessins du graph basé sur les paramètres")
     let option = {}
@@ -101,6 +104,13 @@ if(false) {
 
 // Retrieve some useful DOM elements:
 const container = document.getElementById("sigma-container") as HTMLElement;
+
+//display graph info
+graph_info.innerHTML = `
+Graph infos :
+    <p style="margin: 0px; margin-left: 10px"> ${graph.nodes().length} nodes </p><br>
+    <p style="margin: 0px; margin-left: 10px"> ${graph.edges().length} edges </p>
+`
 
 /** instantiate sigma into the container **/
 const renderer = new Sigma(graph, container, {
